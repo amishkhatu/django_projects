@@ -1,28 +1,21 @@
 # views.py
-from urllib import request
+import os
 
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .models import Student
 from django.contrib import messages
 from django.db import connection
 from django.db import connections
 
-from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth import logout, authenticate
 
 from django.core.files.storage import FileSystemStorage
 import pandas as pd
 from .forms import AddUserForm
-from .management.commands.create_user import Command
 from catapp.utils import create_user
 from django.contrib.auth.models import User
+from django.conf import settings
 
-from django.contrib.auth.decorators import login_required
-
-
-
-
-
+# view function for the query_builder page
 def query_builder(request):
     if request.method == 'POST':
         keyword = request.POST.get('keyword')
@@ -64,11 +57,7 @@ def query_builder(request):
 
         if from_emp:
             query = query + f''' OFFSET {from_emp} '''
-        #
-        #LIMIT 3
-        # OFFSET 2;
-        #     if to_emp:
-        #         query = query + f'and country="{country}"'
+
 
         print('query-->',query)
 
@@ -77,7 +66,6 @@ def query_builder(request):
             cursor.execute(query)
             test_table_data = cursor.fetchall()
 
-        # print('test_table_data:', test_table_data)
 
         print('len of the test_table_data list is :',len(list(test_table_data)))
         messages.success(request, f' {len(list(test_table_data))} records found for the query.')
@@ -86,16 +74,16 @@ def query_builder(request):
 
 
     context={'variable':'this is sent'}
-    # messages.success(request,'this is test')
     return render(request, 'query_builder.html',context)
-    # return HttpResponse('THIS IS HOME')
 
 
+# view function for the user_list page
 def user_list(request):
     users = User.objects.all()
     return render(request, 'users.html', {'users': users})
 
 
+# view function for the add_user page
 def add_user(request):
     if request.method == 'POST':
         form = AddUserForm(request.POST)
@@ -122,68 +110,13 @@ def add_user(request):
     return render(request, 'add_user.html', {'form': form})
 
 
-
-# def display_students(request):
-#     print('hii helloo display_students...')
-#     # students = Student.objects.all()
-#     with connection.cursor() as cursor:
-#         cursor.execute("SELECT * FROM test_table")
-#         test_table_data = cursor.fetchall()
-#
-#     # print('test_table_data:', test_table_data)
-#
-#     # test_table1 = test_table.objects.all()
-#     # print('students---',students)
-#     # return HttpResponse('hello..')
-#     return render(request, 'index.html')
-#
-#
-# def index(request):
-#     context={'variable':'this is sent'}
-#     # messages.success(request,'this is test')
-#     return render(request, 'index.html',context)
-#     # return HttpResponse('THIS IS HOME')
-
+# view function for the index page
 def indx(request):
     context={'variable':'this is sent'}
-    # messages.success(request,'this is test')
     return render(request, 'indx.html',context)
-    # return HttpResponse('THIS IS HOME')
-
-# def upload_file(request):
-#     context={'variable':'this is sent'}
-#     # messages.success(request,'this is test')
-#     return render(request, 'up.html',context)
-#     # return HttpResponse('THIS IS HOME')
-
-def insert_into_company_table(request):
-    # Assuming you have the DataFrame 'df' with your data
-    df = pd.DataFrame({
-        'id': [1, 2, 3],
-        'name': ['Company A', 'Company B', 'Company C'],
-        'other_column': ['Value 1', 'Value 2', 'Value 3'],
-        # ... (other columns)
-    })
-
-    # Create a database connection
-    with connections['default'].cursor() as cursor:
-        # Delete all previous data from the company table
-        delete_query = "DELETE FROM market"
-        cursor.execute(delete_query)
-
-        # Convert the DataFrame to a list of tuples
-        data = [tuple(row) for row in df.itertuples(index=False, name=None)]
-        print('data--',data)
-        # Define the SQL query for bulk insert
-        insert_query = '''INSERT INTO market (id, name, other_column) VALUES (%s, %s, %s)'''
-        print('insert_query--',insert_query)
-
-        # Execute the bulk insert query
-        cursor.executemany(insert_query, data)
-
-    return HttpResponse("Data inserted into company table.")
 
 
+# view function for the upload_file page
 def upload_file(request):
     print('uploadingg.......')
     if request.method == 'POST' and request.FILES['file']:
@@ -194,12 +127,12 @@ def upload_file(request):
         # Save the file to a temporary location
         fs = FileSystemStorage()
         filename = fs.save(uploaded_file.name, uploaded_file)
-        print('2 -->', filename)
+        print('2 uploaded_file.name -->', uploaded_file.name)
 
         # Get the path to the saved file
         file_path = fs.url(filename)
 
-        print('3 -->', file_path)
+        print('3  file_path -->', file_path)
 
         # Read the Excel or CSV file into a Pandas DataFrame
         if filename.endswith(('.xls', '.xlsx')):
@@ -230,8 +163,6 @@ def upload_file(request):
         df.drop(['inx'], axis=1, inplace=True)
 
 
-        # Process the DataFrame as needed (you can perform additional operations here)
-
         if df.shape[0]>0:
             with connections['default'].cursor() as cursor:
                 # Delete all previous data from the company table
@@ -241,24 +172,33 @@ def upload_file(request):
                 # Convert the DataFrame to a list of tuples
                 data = [tuple(row) for row in df.itertuples(index=False, name=None)]
                 # print('data-->',data[:5])
-                data =data[:5]
-                # Define the SQL query for bulk insert
-                # insert_query = """INSERT INTO company (id,name,domain,year_founded,industry,size_range,locality,country,linkedin_url,current_employee_estimate,total_employee_estimate) VALUES %s"""
-                #
+                # data =data[:5]
+                # Defining the SQL query for bulk insert
+
                 insert_query = """
                             INSERT INTO company (id,name,domain,year_founded,industry,size_range,locality,country,linkedin_url,current_employee_estimate,total_employee_estimate,city,state,row) VALUES (%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s, %s, %s)
                         """
 
-                # Execute the bulk insert query
                 cursor.executemany(insert_query, data)
                 print('data imserted...')
+                row_count=df.shape[0]
+
+                try:
+                    file_name=file_path.replace('/','')
+                    print('file_name new-->',file_name)
+                    file_path = os.path.join(settings.BASE_DIR, '.', file_name)
+                    os.remove(file_path)
+                    print(f'file removed named {file_path}')
+                except Exception as e:
+                    print('Exception in removing file..',e)
 
 
-        # Display the uploaded file details
-        return render(request, 'up.html', {'file_path': file_path, 'df': df})
+        # Display the uploaded data details
+        return render(request, 'up.html', {'row_count': row_count, 'df': df})
 
     return render(request, 'up.html')
 
+# view function for the loginUser page
 def loginUser(request):
     print('hii helloo...123')
     print('request.method..',request.method)
@@ -272,56 +212,13 @@ def loginUser(request):
             return redirect('/')
         else:
             messages.error(request, 'Invalid username or password. Please try again.')
-            # return render(request,'login.html')
 
     return render(request,'login.html')
 
-    # context={'variable':'this is sent'}
-    # return render(request, 'login.html',context)
+
 
 def logoutuser(request):
     logout(request)
     return redirect('/login')
-
-
-# def login():
-#     if request.method == 'POST':
-#         username = request
-#         password =
-
-
-
-# def add_user(request):
-#     if request.method == 'POST':
-#
-#
-#
-#
-#         form = AddUserForm(request.POST)
-#         print('formmmmmmmm....')
-#         print(form.is_valid())
-#         print(form)
-#         if form.is_valid():
-#             username = form.cleaned_data['username']
-#             password = form.cleaned_data['password']
-#             print('username----pass-', username, password)
-#             com=Command()
-#             com.handle(username=username,password=password)
-#
-#
-#             form.save()
-#             print('formmmmmmm saved')
-#
-#
-#             return redirect('add_user')
-#         else:
-#             print(form.errors)
-#             print('form error..')
-#     else:
-#         form = AddUserForm()
-#
-#     return render(request, 'add_user.html', {'form': form})
-
-
 
 

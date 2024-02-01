@@ -10,7 +10,6 @@ urlpatterns = [
     path('query_builder/',views.query_builder ,name='query_builder'),
     path('add_user/', views.add_user, name='add_user'),
     path('user_list/', views.user_list, name='user_list'),
-    # path('logout/', views.LogoutView.as_view(), name='logout'),
-    
+
 ]
 

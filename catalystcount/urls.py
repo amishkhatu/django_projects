@@ -20,6 +20,5 @@ from catapp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('', views.display_students),
     path('',include('catapp.urls'))
 ]

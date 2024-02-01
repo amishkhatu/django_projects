@@ -12,12 +12,12 @@ Upload data
         </div>
     {% endif %}
 
-    {% if file_path %}
+    {% if row_count %}
         <div class="alert alert-success" role="alert">
-            File successfully uploaded! Path: {{ file_path }}
+            Data successfully uploaded to DB! Row-count: {{ row_count }}
         </div>
 
-        <h3>Uploaded DataFrame:</h3>
+        <h3>Uploaded Data to DB (Sample):</h3>
         {{ df|safe }}
     {% else %}
         <h2>Upload File</h2>
