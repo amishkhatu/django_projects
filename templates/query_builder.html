@@ -1,0 +1,1286 @@
+{% extends "basen.html" %}
+
+{% block title %}
+Query builder
+{% endblock title %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">QUERY BUILDER</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form  method="post" action="{% url 'query_builder' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="queryInput">Keyword</label>
+            <input type="text" class="form-control" name="keyword" id="queryInput" placeholder="Enter your keyword">
+        </div>
+
+
+        <div class="form-group">
+    <label for="countryDropdown">Country</label>
+    <select class="form-control" name="Country" id="countryDropdown" onchange="updateCities()">
+        <option value="">NA</option>
+        <option value="united states">United States</option>
+        <option value="india">India</option>
+        <option value="ireland">Ireland</option>
+        <option value="united kingdom">United Kingdom</option>
+        <option value="germany">Germany</option>
+        <option value="finland">Finland</option>
+        <option value="france">France</option>
+        <option value="sweden">Sweden</option>
+        <option value="netherlands">Netherlands</option>
+        <option value="switzerland">Switzerland</option>
+        <option value="china">China</option>
+        <option value="canada">Canada</option>
+        <option value="spain">Spain</option>
+        <option value="brazil">Brazil</option>
+        <option value="saudi arabia">Saudi Arabia</option>
+        <option value="australia">Australia</option>
+        <option value="turkey">Turkey</option>
+        <option value="czechia">Czechia</option>
+        <option value="united arab emirates">United Arab Emirates</option>
+        <option value="south korea">South Korea</option>
+        <option value="singapore">Singapore</option>
+        <option value="south africa">South Africa</option>
+        <option value="mexico">Mexico</option>
+        <option value="taiwan">Taiwan</option>
+        <option value="japan">Japan</option>
+        <option value="belgium">Belgium</option>
+        <option value="italy">Italy</option>
+        <option value="colombia">Colombia</option>
+        <option value="algeria">Algeria</option>
+        <option value="norway">Norway</option>
+        <option value="qatar">Qatar</option>
+        <option value="venezuela">Venezuela</option>
+        <option value="indonesia">Indonesia</option>
+        <option value="malaysia">Malaysia</option>
+        <option value="denmark">Denmark</option>
+        <option value="luxembourg">Luxembourg</option>
+        <option value="hong kong">Hong Kong</option>
+        <option value="philippines">Philippines</option>
+        <option value="austria">Austria</option>
+        <option value="chile">Chile</option>
+        <option value="new zealand">New Zealand</option>
+        <option value="kuwait">Kuwait</option>
+        <option value="argentina">Argentina</option>
+        <option value="peru">Peru</option>
+        <option value="greece">Greece</option>
+        <option value="liechtenstein">Liechtenstein</option>
+    </select>
+    </div>
+
+
+        <div class="form-group">
+            <label for="cityDropdown">City</label>
+            <select class="form-control" id="cityDropdown" name="city">
+                <!-- Cities will be dynamically populated based on the selected country -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="stateDropdown">State</label>
+            <select class="form-control" id="stateDropdown" name="state">
+                <!-- States will be dynamically populated based on the selected country -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="industryDropdown">Industry</label>
+            <select class="form-control" id="industryDropdown" name="indus">
+                <option value="">NA</option>
+                <option value="information technology and services">Information technology and services</option>
+                        <option value="military">Military</option>
+                        <option value="accounting">Accounting</option>
+                        <option value="retail">Retail</option>
+                        <option value="computer software">Computer software</option>
+                        <option value="telecommunications">Telecommunications</option>
+                        <option value="defense & space">Defense & space</option>
+                        <option value="financial services">Financial services</option>
+                        <option value="management consulting">Management consulting</option>
+                        <option value="banking">Banking</option>
+                        <option value="internet">Internet</option>
+                        <option value="consumer electronics">Consumer electronics</option>
+                        <option value="electrical/electronic manufacturing">Electrical/electronic manufacturing</option>
+                        <option value="public policy">Public policy</option>
+                        <option value="government administration">Government administration</option>
+                        <option value="restaurants">Restaurants</option>
+                        <option value="hospital & health care">Hospital & health care</option>
+                        <option value="aviation & aerospace">Aviation & aerospace</option>
+                        <option value="automotive">Automotive</option>
+                        <option value="semiconductors">Semiconductors</option>
+                        <option value="computer networking">Computer networking</option>
+                        <option value="food & beverages">Food & beverages</option>
+                        <option value="oil & energy">Oil & energy</option>
+                        <option value="transportation/trucking/railroad">Transportation/trucking/railroad</option>
+                        <option value="pharmaceuticals">Pharmaceuticals</option>
+                        <option value="consumer goods">Consumer goods</option>
+                        <option value="design">Design</option>
+                        <option value="education management">Education management</option>
+                        <option value="insurance">Insurance</option>
+                        <option value="photography">Photography</option>
+                        <option value="logistics and supply chain">Logistics and supply chain</option>
+                        <option value="publishing">Publishing</option>
+                        <option value="real estate">Real estate</option>
+                        <option value="translation and localization">Translation and localization</option>
+                        <option value="facilities services">Facilities services</option>
+                        <option value="investment banking">Investment banking</option>
+                        <option value="cosmetics">Cosmetics</option>
+                        <option value="human resources">Human resources</option>
+                        <option value="medical devices">Medical devices</option>
+                        <option value="biotechnology">Biotechnology</option>
+                        <option value="mechanical or industrial engineering">Mechanical or industrial engineering</option>
+                        <option value="broadcast media">Broadcast media</option>
+                        <option value="hospitality">Hospitality</option>
+                        <option value="sporting goods">Sporting goods</option>
+                        <option value="chemicals">Chemicals</option>
+                        <option value="airlines/aviation">Airlines/aviation</option>
+                        <option value="commercial real estate">Commercial real estate</option>
+                        <option value="construction">Construction</option>
+                        <option value="security and investigations">Security and investigations</option>
+                        <option value="supermarkets">Supermarkets</option>
+                        <option value="health, wellness and fitness">Health, wellness and fitness</option>
+                        <option value="food production">Food production</option>
+                        <option value="civil engineering">Civil engineering</option>
+                        <option value="medical practice">Medical practice</option>
+                        <option value="media production">Media production</option>
+                        <option value="machinery">Machinery</option>
+                        <option value="utilities">Utilities</option>
+                        <option value="textiles">Textiles</option>
+                        <option value="research">Research</option>
+                        <option value="package/freight delivery">Package/freight delivery</option>
+                        <option value="mining & metals">Mining & metals</option>
+                        <option value="mental health care">Mental health care</option>
+                        <option value="outsourcing/offshoring">Outsourcing/offshoring</option>
+                        <option value="professional training & coaching">Professional training & coaching</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="information services">Information services</option>
+                        <option value="international affairs">International affairs</option>
+                        <option value="wireless">Wireless</option>
+                        <option value="writing and editing">Writing and editing</option>
+                        <option value="building materials">Building materials</option>
+                        <option value="higher education">Higher education</option>
+                        <option value="law practice">Law practice</option>
+                        <option value="computer hardware">Computer hardware</option>
+                        <option value="tobacco">Tobacco</option>
+                        <option value="railroad manufacture">Railroad manufacture</option>
+                        <option value="international trade and development">International trade and development</option>
+                        <option value="public relations and communications">Public relations and communications</option>
+                        <option value="non-profit organization management">Non-profit organization management</option>
+                        <option value="printing">Printing</option>
+                        <option value="staffing and recruiting">Staffing and recruiting</option>
+                        <option value="environmental services">Environmental services</option>
+                        <option value="capital markets">Capital markets</option>
+                        <option value="farming">Farming</option>
+                        <option value="business supplies and equipment">Business supplies and equipment</option>
+                        <option value="primary/secondary education">Primary/secondary education</option>
+                        <option value="legislative office">Legislative office</option>
+                        <option value="industrial automation">Industrial automation</option>
+                        <option value="wine and spirits">Wine and spirits</option>
+                        <option value="paper & forest products">Paper & forest products</option>
+                        <option value="leisure, travel & tourism">Leisure, travel & tourism</option>
+                        <option value="arts and crafts">Arts and crafts</option>
+                        <option value="packaging and containers">Packaging and containers</option>
+                        <option value="marketing and advertising">Marketing and advertising</option>
+                        <option value="civic & social organization">Civic & social organization</option>
+                        <option value="apparel & fashion">Apparel & fashion</option>
+                        <option value="individual & family services">Individual & family services</option>
+                        <option value="music">Music</option>
+                        <option value="motion pictures and film">Motion pictures and film</option>
+                        <option value="graphic design">Graphic design</option>
+                        <option value="luxury goods & jewelry">Luxury goods & jewelry</option>
+                        <option value="renewables & environment">Renewables & environment</option>
+                        <option value="legal services">Legal services</option>
+                        <option value="consumer services">Consumer services</option>
+                        <option value="law enforcement">Law enforcement</option>
+                        <option value="philanthropy">Philanthropy</option>
+                        <option value="wholesale">Wholesale</option>
+                        <option value="glass, ceramics & concrete">Glass, ceramics & concrete</option>
+                        <option value="judiciary">Judiciary</option>
+                        <option value="maritime">Maritime</option>
+                        <option value="market research">Market research</option>
+                        <option value="government relations">Government relations</option>
+                        <option value="dairy">Dairy</option>
+                        <option value="public safety">Public safety</option>
+                        <option value="recreational facilities and services">Recreational facilities and services</option>
+                        <option value="gambling & casinos">Gambling & casinos</option>
+                        <option value="computer games">Computer games</option>
+                        <option value="religious institutions">Religious institutions</option>
+                        <option value="warehousing">Warehousing</option>
+                        <option value="newspapers">Newspapers</option>
+                        <option value="fishery">Fishery</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="yearFoundedDropdown">Year Founded</label>
+            <select class="form-control" id="yearFoundedDropdown" name="year">
+                <option value="">NA</option>
+                <option value="1911">1911</option>
+                        <option value="1968">1968</option>
+                        <option value="1989">1989</option>
+                        <option value="1800">1800</option>
+                        <option value="1939">1939</option>
+                        <option value="1994">1994</option>
+                        <option value="1962">1962</option>
+                        <option value="1975">1975</option>
+                        <option value="1876">1876</option>
+                        <option value="1947">1947</option>
+                        <option value="1998">1998</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="employeeFromInput">Employees (From)</label>
+            <input type="number" class="form-control" name="fromemp" id="employeeFromInput" placeholder="Enter minimum employees" min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="employeeToInput">Employees (To)</label>
+                <input type="number" class="form-control" name="empto" id="employeeToInput" placeholder="Enter maximum employees" min="0" oninput="validateEmployeesTo()">
+            </div>
+
+
+
+
+        <button type="submit" class="btn btn-primary">Query Data</button>
+        <button type="reset" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+    </form>
+</div>
+
+<!-- Include Bootstrap JS and Popper.js scripts -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+        function resetForm() {
+        document.getElementById("queryForm").reset();
+
+        // Additional logic to clear dynamic dropdowns or other elements if needed
+        var cityDropdown = document.getElementById("cityDropdown");
+        var stateDropdown = document.getElementById("stateDropdown");
+
+        cityDropdown.innerHTML = "";
+        stateDropdown.innerHTML = "";
+    }
+
+
+    function updateCities() {
+        var countryDropdown = document.getElementById("countryDropdown");
+        var cityDropdown = document.getElementById("cityDropdown");
+        var stateDropdown = document.getElementById("stateDropdown");
+
+        // Clear existing options
+        cityDropdown.innerHTML = "";
+        stateDropdown.innerHTML = "";
+
+        // Populate cities and states based on the selected country
+        switch (countryDropdown.value) {
+            case "united states":
+                addOption(cityDropdown, "new york");
+                addOption(cityDropdown, "alexandria");
+                addOption(cityDropdown, "palo alto");
+                addOption(cityDropdown, "teaneck");
+                addOption(cityDropdown, "withee");
+                addOption(cityDropdown, "redmond");
+                addOption(cityDropdown, "dallas");
+                addOption(cityDropdown, "randolph");
+                addOption(cityDropdown, "san francisco");
+                addOption(cityDropdown, "charlotte");
+                addOption(cityDropdown, "washington");
+                addOption(cityDropdown, "seattle");
+                addOption(cityDropdown, "cupertino");
+                addOption(cityDropdown, "redwood shores");
+                addOption(cityDropdown, "mountain view");
+                addOption(cityDropdown, "oak brook");
+                addOption(cityDropdown, "chicago");
+                addOption(cityDropdown, "oakland");
+                addOption(cityDropdown, "dearborn");
+                addOption(cityDropdown, "santa clara");
+                addOption(cityDropdown, "san jose");
+                addOption(cityDropdown, "detroit");
+                addOption(cityDropdown, "purchase");
+                addOption(cityDropdown, "minneapolis");
+                addOption(cityDropdown, "atlanta");
+                addOption(cityDropdown, "round rock");
+                addOption(cityDropdown, "morristown");
+                addOption(cityDropdown, "houston");
+                addOption(cityDropdown, "bethesda");
+                addOption(cityDropdown, "new brunswick");
+                addOption(cityDropdown, "erlanger");
+                addOption(cityDropdown, "bloomington");
+                addOption(cityDropdown, "fairfield");
+                addOption(cityDropdown, "cincinnati");
+                addOption(cityDropdown, "deerfield");
+                addOption(cityDropdown, "austin");
+                addOption(cityDropdown, "mooresville");
+                addOption(cityDropdown, "hopkinton");
+                addOption(cityDropdown, "basking ridge");
+                addOption(cityDropdown, "montvale");
+                addOption(cityDropdown, "menlo park");
+                addOption(cityDropdown, "falls church");
+                addOption(cityDropdown, "roseland");
+                addOption(cityDropdown, "illinois city");
+                addOption(cityDropdown, "san ramon");
+                addOption(cityDropdown, "none");
+                addOption(cityDropdown, "woonsocket");
+                addOption(cityDropdown, "kenilworth");
+                addOption(cityDropdown, "nan");
+                addOption(cityDropdown, "milwaukee");
+                addOption(cityDropdown, "northbrook");
+                addOption(cityDropdown, "saint paul");
+                addOption(cityDropdown, "norwalk");
+                addOption(cityDropdown, "los angeles");
+                addOption(cityDropdown, "boston");
+                addOption(cityDropdown, "irving");
+                addOption(cityDropdown, "bellevue");
+                addOption(cityDropdown, "beaverton");
+                addOption(cityDropdown, "richfield");
+                addOption(cityDropdown, "fort worth");
+                addOption(cityDropdown, "pittsburgh");
+                addOption(cityDropdown, "overland park");
+                addOption(cityDropdown, "arlington");
+                addOption(cityDropdown, "mclean");
+                addOption(cityDropdown, "san diego");
+                addOption(cityDropdown, "wayzata");
+                addOption(cityDropdown, "addison");
+                addOption(cityDropdown, "philadelphia");
+                addOption(cityDropdown, "peoria heights");
+                addOption(cityDropdown, "pasadena");
+                addOption(cityDropdown, "waltham");
+                addOption(cityDropdown, "indianapolis");
+                addOption(cityDropdown, "plainsboro");
+                addOption(cityDropdown, "kansas city");
+                addOption(cityDropdown, "baltimore");
+                addOption(cityDropdown, "issaquah");
+                addOption(cityDropdown, "danbury");
+                addOption(cityDropdown, "midland");
+                addOption(cityDropdown, "providence");
+                addOption(cityDropdown, "memphis");
+                addOption(cityDropdown, "st. louis");
+                addOption(cityDropdown, "burbank");
+                addOption(cityDropdown, "cleveland");
+                addOption(cityDropdown, "columbus");
+                addOption(cityDropdown, "rochester");
+                addOption(cityDropdown, "moline");
+                addOption(cityDropdown, "hartford");
+                addOption(cityDropdown, "hillsborough");
+                addOption(cityDropdown, "nashville");
+                addOption(cityDropdown, "wilmington");
+                addOption(cityDropdown, "hoffman estates");
+                addOption(cityDropdown, "menomonee falls");
+                addOption(cityDropdown, "louisville");
+                addOption(cityDropdown, "duluth");
+                addOption(cityDropdown, "madison");
+                addOption(cityDropdown, "ann arbor");
+                addOption(cityDropdown, "jacksonville");
+                addOption(cityDropdown, "schenectady");
+                addOption(cityDropdown, "newtown");
+                addOption(cityDropdown, "plano");
+                addOption(cityDropdown, "marlborough");
+                addOption(cityDropdown, "morrisville");
+                addOption(cityDropdown, "monroe");
+                addOption(cityDropdown, "thousand oaks");
+                addOption(cityDropdown, "chesterfield");
+                addOption(cityDropdown, "north chicago");
+                addOption(cityDropdown, "seminole");
+                addOption(cityDropdown, "kalamazoo");
+                addOption(cityDropdown, "lakeland");
+                addOption(cityDropdown, "san bruno");
+                addOption(cityDropdown, "san antonio");
+                addOption(cityDropdown, "bloomfield");
+                addOption(cityDropdown, "newark");
+                addOption(cityDropdown, "garfield");
+                addOption(cityDropdown, "university park");
+                addOption(cityDropdown, "dublin");
+                addOption(cityDropdown, "ada");
+                addOption(cityDropdown, "winston salem");
+                addOption(cityDropdown, "sunrise");
+                addOption(cityDropdown, "cary");
+                addOption(cityDropdown, "troy");
+                addOption(cityDropdown, "gainesville");
+                addOption(cityDropdown, "st paul");
+                addOption(cityDropdown, "de pere");
+                addOption(cityDropdown, "bay village");
+                addOption(cityDropdown, "pleasanton");
+                addOption(cityDropdown, "lake buena vista");
+                addOption(cityDropdown, "framingham");
+                addOption(cityDropdown, "nassau");
+                addOption(cityDropdown, "stanford");
+                addOption(cityDropdown, "south san francisco");
+                addOption(cityDropdown, "franklin lakes");
+                addOption(cityDropdown, "hanover");
+                addOption(cityDropdown, "raritan");
+                addOption(cityDropdown, "stamford");
+                addOption(cityDropdown, "denver");
+                addOption(cityDropdown, "st. petersburg");
+                addOption(cityDropdown, "southfield");
+                addOption(cityDropdown, "college station");
+                addOption(cityDropdown, "tempe");
+                addOption(cityDropdown, "brookfield");
+                addOption(cityDropdown, "east lansing");
+                addOption(cityDropdown, "cedar rapids");
+                addOption(cityDropdown, "boca raton");
+                addOption(cityDropdown, "riverside");
+                addOption(cityDropdown, "hoofddorp");
+                addOption(cityDropdown, "cambridge");
+                addOption(cityDropdown, "albany");
+                addOption(cityDropdown, "chevy chase");
+                addOption(cityDropdown, "englewood");
+                addOption(cityDropdown, "battle creek");
+                addOption(cityDropdown, "west lafayette");
+                addOption(cityDropdown, "renton");
+                addOption(cityDropdown, "champaign");
+                addOption(cityDropdown, "benton harbor");
+                addOption(cityDropdown, "harrisburg");
+                addOption(cityDropdown, "sacramento");
+                addOption(cityDropdown, "valley forge");
+                addOption(cityDropdown, "reston");
+                addOption(cityDropdown, "farmington hills");
+                addOption(cityDropdown, "fort bragg");
+                addOption(cityDropdown, "birmingham");
+                addOption(cityDropdown, "akron");
+                addOption(cityDropdown, "des moines");
+                addOption(cityDropdown, "berkeley");
+                addOption(cityDropdown, "bentonville");
+                addOption(cityDropdown, "blue bell");
+                addOption(cityDropdown, "miami");
+                addOption(cityDropdown, "hull");
+                addOption(cityDropdown, "phoenix");
+                addOption(cityDropdown, "buffalo");
+                addOption(cityDropdown, "reynoldsburg");
+                addOption(cityDropdown, "monrovia");
+                addOption(cityDropdown, "lake success");
+                addOption(cityDropdown, "irvine");
+                addOption(cityDropdown, "brabant");
+                addOption(cityDropdown, "goodlettsville");
+                addOption(cityDropdown, "ithaca");
+                addOption(cityDropdown, "college park");
+                addOption(cityDropdown, "la jolla");
+                addOption(cityDropdown, "boise");
+                addOption(cityDropdown, "malvern");
+                addOption(cityDropdown, "davis");
+                addOption(cityDropdown, "madrid");
+                addOption(cityDropdown, "lansing");
+                addOption(cityDropdown, "east hartford");
+                addOption(cityDropdown, "tinker afb");
+                addOption(cityDropdown, "murray");
+                addOption(cityDropdown, "the woodlands");
+                addOption(cityDropdown, "omaha");
+                addOption(cityDropdown, "springdale");
+                addOption(cityDropdown, "las vegas");
+                addOption(cityDropdown, "tucson");
+                addOption(cityDropdown, "fremont");
+                addOption(cityDropdown, "lake forest");
+                addOption(cityDropdown, "schaumburg");
+                addOption(cityDropdown, "warsaw");
+                addOption(cityDropdown, "sunnyvale");
+                addOption(cityDropdown, "royal oak");
+                addOption(cityDropdown, "eden prairie");
+                addOption(cityDropdown, "chapel hill");
+                addOption(cityDropdown, "rosemont");
+                addOption(cityDropdown, "evanston");
+                addOption(cityDropdown, "melbourne");
+                addOption(cityDropdown, "neubiberg");
+                addOption(cityDropdown, "naples");
+                addOption(cityDropdown, "orlando");
+                addOption(cityDropdown, "tampa");
+                addOption(cityDropdown, "fort collins");
+                addOption(cityDropdown, "lehi");
+                addOption(cityDropdown, "raleigh");
+                addOption(cityDropdown, "north canton");
+                addOption(cityDropdown, "silver spring");
+                addOption(cityDropdown, "aliso viejo");
+                addOption(cityDropdown, "bridgewater");
+                addOption(cityDropdown, "new britain");
+                addOption(cityDropdown, "grand rapids");
+                addOption(cityDropdown, "rolling meadows");
+                addOption(cityDropdown, "palmetto");
+                addOption(cityDropdown, "burlington");
+                addOption(cityDropdown, "cobb");
+                addOption(cityDropdown, "redwood city");
+                addOption(cityDropdown, "durham");
+                addOption(cityDropdown, "costa mesa");
+                addOption(cityDropdown, "richmond");
+                addOption(cityDropdown, "springfield");
+                addOption(cityDropdown, "columbia");
+                addOption(cityDropdown, "westborough");
+                addOption(cityDropdown, "miamisburg");
+                addOption(cityDropdown, "newport news");
+                addOption(cityDropdown, "bristol");
+                addOption(cityDropdown, "corning");
+                addOption(cityDropdown, "coraopolis");
+                addOption(cityDropdown, "portland");
+                addOption(cityDropdown, "bolingbrook");
+                addOption(cityDropdown, "blacksburg");
+                addOption(cityDropdown, "princeton");
+                addOption(cityDropdown, "provo");
+                addOption(cityDropdown, "san rafael");
+                addOption(cityDropdown, "lenexa");
+                addOption(cityDropdown, "union");
+                addOption(cityDropdown, "downers grove");
+                addOption(cityDropdown, "florham park");
+                addOption(cityDropdown, "el segundo");
+                addOption(cityDropdown, "broomfield");
+                addOption(cityDropdown, "concord");
+                addOption(cityDropdown, "morris plains");
+                addOption(cityDropdown, "glendale");
+                addOption(cityDropdown, "canonsburg");
+                addOption(cityDropdown, "brentwood");
+                addOption(cityDropdown, "foster city");
+                addOption(cityDropdown, "trexlertown");
+                addOption(cityDropdown, "hoboken");
+                addOption(cityDropdown, "kennett square");
+                addOption(cityDropdown, "centennial");
+                addOption(cityDropdown, "grapevine");
+                addOption(cityDropdown, "winona");
+                addOption(cityDropdown, "mexico");
+                addOption(cityDropdown, "riverwoods");
+                addOption(cityDropdown, "long island city");
+                addOption(cityDropdown, "new albany");
+                addOption(cityDropdown, "athens");
+                addOption(cityDropdown, "italy");
+                addOption(cityDropdown, "scottsdale");
+                addOption(cityDropdown, "roanoke");
+                addOption(cityDropdown, "wayne");
+                addOption(cityDropdown, "tallahassee");
+                addOption(cityDropdown, "ames");
+                addOption(cityDropdown, "charleston");
+                addOption(cityDropdown, "fort lauderdale");
+                addOption(cityDropdown, "charlottesville");
+                addOption(cityDropdown, "norwood");
+                addOption(cityDropdown, "suwanee");
+                addOption(cityDropdown, "brea");
+                addOption(cityDropdown, "matthews");
+                addOption(cityDropdown, "lexington");
+                addOption(cityDropdown, "new orleans");
+                addOption(cityDropdown, "salt lake city");
+                addOption(cityDropdown, "parsippany");
+                addOption(cityDropdown, "rosemead");
+                addOption(cityDropdown, "genesee");
+                addOption(cityDropdown, "verona");
+                addOption(cityDropdown, "vernon hills");
+                addOption(cityDropdown, "naperville");
+                addOption(cityDropdown, "toledo");
+                addOption(cityDropdown, "lebanon");
+                addOption(cityDropdown, "santa monica");
+                addOption(cityDropdown, "little rock");
+                addOption(cityDropdown, "corvallis");
+                addOption(cityDropdown, "holland");
+                addOption(cityDropdown, "lincoln");
+                addOption(cityDropdown, "santa ana");
+                addOption(cityDropdown, "bronx");
+                addOption(cityDropdown, "san mateo");
+                addOption(cityDropdown, "savannah");
+                addOption(cityDropdown, "marriottsville");
+                addOption(cityDropdown, "sioux falls");
+                addOption(cityDropdown, "saint louis");
+                addOption(cityDropdown, "morgantown");
+                addOption(cityDropdown, "taylor");
+                addOption(cityDropdown, "radnor");
+                addOption(cityDropdown, "dupage");
+                addOption(cityDropdown, "johnston");
+                addOption(cityDropdown, "district of columbia");
+                addOption(cityDropdown, "denton");
+                addOption(cityDropdown, "needham");
+                addOption(cityDropdown, "lake mary");
+                addOption(cityDropdown, "knoxville");
+                addOption(cityDropdown, "kohler");
+                addOption(cityDropdown, "chanhassen");
+                addOption(cityDropdown, "oklahoma city");
+                addOption(cityDropdown, "summit");
+                addOption(cityDropdown, "cranberry township");
+                addOption(cityDropdown, "idaho falls");
+
+                addOption(stateDropdown, " new york");
+                addOption(stateDropdown, " virginia");
+                addOption(stateDropdown, " california");
+                addOption(stateDropdown, " new jersey");
+                addOption(stateDropdown, " wisconsin");
+                addOption(stateDropdown, " washington");
+                addOption(stateDropdown, " texas");
+                addOption(stateDropdown, " north carolina");
+                addOption(stateDropdown, " district of columbia");
+                addOption(stateDropdown, " illinois");
+                addOption(stateDropdown, " michigan");
+                addOption(stateDropdown, " minnesota");
+                addOption(stateDropdown, " georgia");
+                addOption(stateDropdown, " maryland");
+                addOption(stateDropdown, " kentucky");
+                addOption(stateDropdown, " connecticut");
+                addOption(stateDropdown, " ohio");
+                addOption(stateDropdown, " massachusetts");
+                addOption(stateDropdown, " south carolina");
+                addOption(stateDropdown, " rhode island");
+                addOption(stateDropdown, "None");
+                addOption(stateDropdown, " oregon");
+                addOption(stateDropdown, " pennsylvania");
+                addOption(stateDropdown, " kansas");
+                addOption(stateDropdown, " indiana");
+                addOption(stateDropdown, " missouri");
+                addOption(stateDropdown, " tennessee");
+                addOption(stateDropdown, " new hampshire");
+                addOption(stateDropdown, " delaware");
+                addOption(stateDropdown, " florida");
+                addOption(stateDropdown, " louisiana");
+                addOption(stateDropdown, " colorado");
+                addOption(stateDropdown, " arizona");
+                addOption(stateDropdown, " iowa");
+                addOption(stateDropdown, " north holland");
+                addOption(stateDropdown, " alabama");
+                addOption(stateDropdown, " arkansas");
+                addOption(stateDropdown, " west virginia");
+                addOption(stateDropdown, " idaho");
+                addOption(stateDropdown, " madrid");
+                addOption(stateDropdown, " oklahoma");
+                addOption(stateDropdown, " utah");
+                addOption(stateDropdown, " nebraska");
+                addOption(stateDropdown, " nevada");
+                addOption(stateDropdown, " bayern");
+                addOption(stateDropdown, " maine");
+                addOption(stateDropdown, " south dakota");
+                break;
+
+                case "india":
+                addOption(cityDropdown, "bombay");
+                addOption(cityDropdown, "bangalore");
+                addOption(cityDropdown, "noida");
+                addOption(cityDropdown, "pune");
+                addOption(cityDropdown, "hyderabad");
+                addOption(cityDropdown, "gurgaon");
+                addOption(cityDropdown, "new delhi");
+                addOption(cityDropdown, "hyderābād");
+                addOption(cityDropdown, "bengaluru");
+                addOption(cityDropdown, "vadodara");
+                addOption(cityDropdown, "haridwar");
+
+                addOption(stateDropdown, " maharashtra");
+                addOption(stateDropdown, " karnataka");
+                addOption(stateDropdown, " uttar pradesh");
+                addOption(stateDropdown, " andhra pradesh");
+                addOption(stateDropdown, " haryana");
+                addOption(stateDropdown, " delhi");
+                addOption(stateDropdown, " telangana");
+                addOption(stateDropdown, " gujarat");
+                addOption(stateDropdown, " uttarakhand");
+                break;
+
+                case "ireland":
+                addOption(cityDropdown, "dublin");
+                addOption(cityDropdown, "coolock");
+                addOption(cityDropdown, "swords");
+                addOption(cityDropdown, "leopardstown");
+                addOption(cityDropdown, "ballsbridge");
+
+                addOption(stateDropdown, " dublin");
+                addOption(stateDropdown, " leinster");
+                break;
+
+                case "united kingdom":
+                addOption(cityDropdown, "london");
+                addOption(cityDropdown, "berks");
+                addOption(cityDropdown, "hayes");
+                addOption(cityDropdown, "guildford");
+                addOption(cityDropdown, "turin");
+                addOption(cityDropdown, "buckingham");
+                addOption(cityDropdown, "edinburgh");
+                addOption(cityDropdown, "crawley");
+                addOption(cityDropdown, "hertfordshire");
+                addOption(cityDropdown, "denham");
+                addOption(cityDropdown, "sandwell");
+                addOption(cityDropdown, "gillingham");
+                addOption(cityDropdown, "hook");
+                addOption(cityDropdown, "aberdeen");
+                addOption(cityDropdown, "kenilworth");
+                addOption(cityDropdown, "west yorkshire");
+                addOption(cityDropdown, "chertsey");
+                addOption(cityDropdown, "warwick");
+                addOption(cityDropdown, "epsom");
+                addOption(cityDropdown, "andover");
+                addOption(cityDropdown, "newcastle upon tyne");
+                addOption(cityDropdown, "surrey");
+                addOption(cityDropdown, "oxford");
+                addOption(cityDropdown, "belfast");
+                addOption(cityDropdown, "redditch");
+                addOption(cityDropdown, "manchester");
+                addOption(cityDropdown, "nottingham");
+                addOption(cityDropdown, "cambridge");
+                addOption(cityDropdown, "bradford");
+                addOption(cityDropdown, "portsmouth");
+                addOption(cityDropdown, "county of wiltshire");
+                addOption(cityDropdown, "bath");
+                addOption(cityDropdown, "nottinghamshire");
+                addOption(cityDropdown, "weybridge");
+                addOption(cityDropdown, "ayot saint lawrence");
+                addOption(cityDropdown, "leeds");
+                addOption(cityDropdown, "nan");
+
+                addOption(stateDropdown, " greater london");
+                addOption(stateDropdown, " west berkshire");
+                addOption(stateDropdown, " hillingdon");
+                addOption(stateDropdown, " surrey");
+                addOption(stateDropdown, " turin");
+                addOption(stateDropdown, " buckinghamshire");
+                addOption(stateDropdown, " edinburgh");
+                addOption(stateDropdown, " west sussex");
+                addOption(stateDropdown, " england");
+                addOption(stateDropdown, " hertfordshire");
+                addOption(stateDropdown, " sandwell");
+                addOption(stateDropdown, " medway");
+                addOption(stateDropdown, " hampshire");
+                addOption(stateDropdown, " aberdeen city");
+                addOption(stateDropdown, " warwickshire");
+                addOption(stateDropdown, " kirklees");
+                addOption(stateDropdown, " london");
+                addOption(stateDropdown, " newcastle upon tyne");
+                addOption(stateDropdown, " oxfordshire");
+                addOption(stateDropdown, " belfast");
+                addOption(stateDropdown, " worcestershire");
+                addOption(stateDropdown, " manchester");
+                addOption(stateDropdown, " nottingham");
+                addOption(stateDropdown, " cambridgeshire");
+                addOption(stateDropdown, " bradford");
+                addOption(stateDropdown, " virginia");
+                addOption(stateDropdown, " wiltshire");
+                addOption(stateDropdown, " bath and north east somerset");
+                addOption(stateDropdown, " nottinghamshire");
+                addOption(stateDropdown, " hertford");
+                addOption(stateDropdown, " leeds");
+                addOption(stateDropdown, "None");
+                break;
+
+                case "germany":
+                addOption(cityDropdown, "munich");
+                addOption(cityDropdown, "bonn");
+                addOption(cityDropdown, "frankfurt");
+                addOption(cityDropdown, "ludwigshafen");
+                addOption(cityDropdown, "od");
+                addOption(cityDropdown, "ingelheim");
+                addOption(cityDropdown, "erlangen");
+                addOption(cityDropdown, "herzogenaurach");
+                addOption(cityDropdown, "leverkusen");
+                addOption(cityDropdown, "berlin");
+                addOption(cityDropdown, "essen");
+                addOption(cityDropdown, "frankfurt am main");
+                addOption(cityDropdown, "dusseldorf");
+                addOption(cityDropdown, "wolfsburg");
+                addOption(cityDropdown, "holzkirchen");
+                addOption(cityDropdown, "darmstadt");
+                addOption(cityDropdown, "monheim am rhein");
+                addOption(cityDropdown, "nuremberg");
+                addOption(cityDropdown, "stuttgart");
+                addOption(cityDropdown, "hannover");
+                addOption(cityDropdown, "ingolstadt");
+
+                addOption(stateDropdown, " bavaria");
+                addOption(stateDropdown, " nordrhein-westfalen");
+                addOption(stateDropdown, " hessen");
+                addOption(stateDropdown, " rheinland-pfalz");
+                addOption(stateDropdown, " bayern");
+                addOption(stateDropdown, " north rhine-westphalia");
+                addOption(stateDropdown, " berlin");
+                addOption(stateDropdown, " hesse");
+                addOption(stateDropdown, " niedersachsen");
+                addOption(stateDropdown, " baden-wurttemberg");
+                addOption(stateDropdown, " lower saxony");
+                break;
+
+                case "finland":
+                addOption(cityDropdown, "espoo");
+                addOption(cityDropdown, "helsinki");
+
+                addOption(stateDropdown, " uusimaa");
+                break;
+
+                case "france":
+                addOption(cityDropdown, "paris");
+                addOption(cityDropdown, "france");
+                addOption(cityDropdown, "bezons");
+                addOption(cityDropdown, "boulogne-billancourt");
+                addOption(cityDropdown, "saint-denis-de-palin");
+                addOption(cityDropdown, "ferrand");
+                addOption(cityDropdown, "nanterre");
+                addOption(cityDropdown, "saint denis");
+                addOption(cityDropdown, "lille");
+                addOption(cityDropdown, "meyreuil");
+                addOption(cityDropdown, "la defense");
+                addOption(cityDropdown, "nord");
+                addOption(cityDropdown, "montrouge");
+                addOption(cityDropdown, "lyon");
+                addOption(cityDropdown, "velizy-villacoublay");
+                addOption(cityDropdown, "moulineaux");
+                addOption(cityDropdown, "plaisir");
+                addOption(cityDropdown, "marseille");
+                addOption(cityDropdown, "versailles");
+                addOption(cityDropdown, "courbevoie");
+                addOption(cityDropdown, "bois");
+
+                addOption(stateDropdown, " île-de-france");
+                addOption(stateDropdown, " aquitaine");
+                addOption(stateDropdown, " ile-de-france");
+                addOption(stateDropdown, " centre");
+                addOption(stateDropdown, " corrèze");
+                addOption(stateDropdown, " paris");
+                addOption(stateDropdown, " hauts-de-france");
+                addOption(stateDropdown, " provence-alpes-cote d'azur");
+                addOption(stateDropdown, " hauts-de-seine");
+                addOption(stateDropdown, " auvergne-rhône-alpes");
+                addOption(stateDropdown, " normandy");
+                addOption(stateDropdown, " nouvelle-aquitaine");
+                break;
+
+                case "sweden":
+                addOption(cityDropdown, "kista");
+                addOption(cityDropdown, "stockholm");
+                addOption(cityDropdown, "malmö");
+                addOption(cityDropdown, "ase");
+                addOption(cityDropdown, "göteborg");
+                addOption(cityDropdown, "sundbyberg");
+                addOption(cityDropdown, "solna");
+
+                addOption(stateDropdown, " stockholm");
+                addOption(stateDropdown, " stockholms lan");
+                addOption(stateDropdown, " skåne");
+                addOption(stateDropdown, " vasternorrlands lan");
+                addOption(stateDropdown, " vaestra goetaland");
+                break;
+
+                case "netherlands":
+                addOption(cityDropdown, "the hague");
+                addOption(cityDropdown, "amsterdam");
+                addOption(cityDropdown, "utrecht");
+                addOption(cityDropdown, "noord");
+                addOption(cityDropdown, "hoofddorp");
+                addOption(cityDropdown, "amstelveen");
+                addOption(cityDropdown, "veldhoven");
+                addOption(cityDropdown, "orange");
+                addOption(cityDropdown, "badhoevedorp");
+                addOption(cityDropdown, "ee");
+                addOption(cityDropdown, "rotterdam");
+                addOption(cityDropdown, "amersfoort");
+                addOption(cityDropdown, "delft");
+                addOption(cityDropdown, "giethoorn");
+
+                addOption(stateDropdown, " zuid-holland");
+                addOption(stateDropdown, " noord-holland");
+                addOption(stateDropdown, " north holland");
+                addOption(stateDropdown, " utrecht");
+                addOption(stateDropdown, " noord-brabant");
+                addOption(stateDropdown, " florida");
+                addOption(stateDropdown, " friesland");
+                addOption(stateDropdown, " overijssel");
+                addOption(stateDropdown, " south holland");
+                break;
+
+                case "switzerland":
+                addOption(cityDropdown, "vevey");
+                addOption(cityDropdown, "zurich");
+                addOption(cityDropdown, "basel");
+                addOption(cityDropdown, "jona");
+                addOption(cityDropdown, "geneva");
+                addOption(cityDropdown, "schindellegi");
+                addOption(cityDropdown, "glattbrugg");
+                addOption(cityDropdown, "berwyn");
+                addOption(cityDropdown, "chester");
+                addOption(cityDropdown, "honolulu");
+                addOption(cityDropdown, "zug");
+                addOption(cityDropdown, "baden");
+                addOption(cityDropdown, "washington");
+                addOption(cityDropdown, "moscow");
+                addOption(cityDropdown, "lucerne");
+                addOption(cityDropdown, "bergen");
+                addOption(cityDropdown, "bern");
+                addOption(cityDropdown, "zhui");
+                addOption(cityDropdown, "baar");
+
+                addOption(stateDropdown, " vaud");
+                addOption(stateDropdown, " zurich");
+                addOption(stateDropdown, " basel-city");
+                addOption(stateDropdown, " schwyz");
+                addOption(stateDropdown, " geneva");
+                addOption(stateDropdown, " pennsylvania");
+                addOption(stateDropdown, " hawaii");
+                addOption(stateDropdown, " zug");
+                addOption(stateDropdown, " aargau");
+                addOption(stateDropdown, " district of columbia");
+                addOption(stateDropdown, " moscow city");
+                addOption(stateDropdown, " lucerne");
+                addOption(stateDropdown, " new jersey");
+                addOption(stateDropdown, " bern");
+                addOption(stateDropdown, " xizang");
+                break;
+
+                case "china":
+                addOption(cityDropdown, "shenzhen");
+                addOption(cityDropdown, "peking");
+                addOption(cityDropdown, "hangzhou");
+                addOption(cityDropdown, "xicheng district");
+
+                addOption(stateDropdown, " guangdong");
+                addOption(stateDropdown, " beijing");
+                addOption(stateDropdown, " zhejiang");
+                break;
+
+                case "canada":
+                addOption(cityDropdown, "toronto");
+                addOption(cityDropdown, "montréal");
+                addOption(cityDropdown, "edmonton");
+                addOption(cityDropdown, "aurora");
+                addOption(cityDropdown, "levis");
+                addOption(cityDropdown, "vancouver");
+                addOption(cityDropdown, "ottawa");
+                addOption(cityDropdown, "calgary");
+                addOption(cityDropdown, "brampton");
+                addOption(cityDropdown, "hamilton");
+                addOption(cityDropdown, "waterloo");
+
+                addOption(stateDropdown, " ontario");
+                addOption(stateDropdown, " quebec");
+                addOption(stateDropdown, " alberta");
+                addOption(stateDropdown, " british columbia");
+                break;
+
+                case "spain":
+                addOption(cityDropdown, "boadilla del monte");
+                addOption(cityDropdown, "madrid");
+                addOption(cityDropdown, "bilbao");
+                addOption(cityDropdown, "alcobendas");
+                addOption(cityDropdown, "arteixo");
+                addOption(cityDropdown, "barcelona");
+                addOption(cityDropdown, "majadahonda");
+
+                addOption(stateDropdown, " madrid");
+                addOption(stateDropdown, " basque country");
+                addOption(stateDropdown, " galicia");
+                addOption(stateDropdown, " catalonia");
+                break;
+
+                case "brazil":
+                addOption(cityDropdown, "rio de janeiro");
+                addOption(cityDropdown, "sao paulo");
+                addOption(cityDropdown, "osasco");
+                addOption(cityDropdown, "brasília");
+                addOption(cityDropdown, "bau");
+                addOption(cityDropdown, "porto alegre");
+                addOption(cityDropdown, "são josé dos campos");
+                addOption(cityDropdown, "canoas");
+                addOption(cityDropdown, "leme");
+
+                addOption(stateDropdown, " rio de janeiro");
+                addOption(stateDropdown, " sao paulo");
+                addOption(stateDropdown, " federal district");
+                addOption(stateDropdown, " mato grosso");
+                addOption(stateDropdown, " rio grande do sul");
+                break;
+
+                case "saudi arabia":
+                addOption(cityDropdown, "dhahran");
+                addOption(cityDropdown, "riyadh");
+
+                addOption(stateDropdown, " eastern province");
+                addOption(stateDropdown, " ar riyāḑ");
+                break;
+
+                case "australia":
+                addOption(cityDropdown, "melbourne");
+                addOption(cityDropdown, "nan");
+                addOption(cityDropdown, "sydney");
+                addOption(cityDropdown, "north sydney");
+                addOption(cityDropdown, "brisbane");
+                addOption(cityDropdown, "clayton");
+                addOption(cityDropdown, "parkville");
+                addOption(cityDropdown, "denmark");
+                addOption(cityDropdown, "macquarie park");
+
+                addOption(stateDropdown, " victoria");
+                addOption(stateDropdown, "None");
+                addOption(stateDropdown, " new south wales");
+                addOption(stateDropdown, " queensland");
+                addOption(stateDropdown, " western australia");
+                break;
+
+                case "turkey":
+                addOption(cityDropdown, "maslak");
+                addOption(cityDropdown, "i̇stanbul");
+                addOption(cityDropdown, "ankara");
+
+                addOption(stateDropdown, " istanbul");
+                addOption(stateDropdown, " ankara");
+                break;
+
+                case "czechia":
+                addOption(cityDropdown, "prague");
+                addOption(cityDropdown, "nove mesto pod smrkem");
+
+                addOption(stateDropdown, " praha");
+                addOption(stateDropdown, " liberecky kraj");
+                break;
+
+                case "united arab emirates":
+                addOption(cityDropdown, "dubai");
+                addOption(cityDropdown, "abu dhabi");
+
+                addOption(stateDropdown, " dubai");
+                addOption(stateDropdown, " abu dhabi");
+                break;
+
+                case "south korea":
+                addOption(cityDropdown, "seoul");
+
+                addOption(stateDropdown, " seoul-t'ukpyolsi");
+                break;
+
+                case "singapore":
+                addOption(cityDropdown, "nan");
+                addOption(cityDropdown, "los angeles");
+
+                addOption(stateDropdown, "None");
+                addOption(stateDropdown, " california");
+                break;
+
+                case "south africa":
+                addOption(cityDropdown, "johannesburg");
+                addOption(cityDropdown, "sandton");
+                addOption(cityDropdown, "bedfordview");
+                addOption(cityDropdown, "midrand");
+                addOption(cityDropdown, "pretoria");
+                addOption(cityDropdown, "cape town");
+
+                addOption(stateDropdown, " gauteng");
+                addOption(stateDropdown, " western cape");
+                break;
+
+                case "mexico":
+                addOption(cityDropdown, "mexico");
+                addOption(cityDropdown, "san pedro garza garcía");
+                addOption(cityDropdown, "monterrey");
+                addOption(cityDropdown, "cuauhtemoc");
+                addOption(cityDropdown, "palo alto");
+
+                addOption(stateDropdown, " distrito federal");
+                addOption(stateDropdown, " nuevo león");
+                addOption(stateDropdown, " nuevo leon");
+                addOption(stateDropdown, " mexico");
+                break;
+
+                case "taiwan":
+                addOption(cityDropdown, "panchiao");
+
+                addOption(stateDropdown, " t'ai-pei");
+                break;
+
+                case "japan":
+                addOption(cityDropdown, "yokohama");
+                addOption(cityDropdown, "torrance");
+                addOption(cityDropdown, "tokyo");
+
+                addOption(stateDropdown, " kanagawa");
+                addOption(stateDropdown, " california");
+                addOption(stateDropdown, " tokyo");
+                break;
+
+                case "belgium":
+                addOption(cityDropdown, "brussels");
+                addOption(cityDropdown, "leuven");
+                addOption(cityDropdown, "nan");
+
+                addOption(stateDropdown, " brussels hoofdstedelijk gewest");
+                addOption(stateDropdown, " vlaams-brabant");
+                addOption(stateDropdown, "None");
+                break;
+
+                case "italy":
+                addOption(cityDropdown, "san donato milanese");
+                addOption(cityDropdown, "milano");
+                addOption(cityDropdown, "rome");
+                addOption(cityDropdown, "turin");
+                addOption(cityDropdown, "milan");
+                addOption(cityDropdown, "moliterno");
+                addOption(cityDropdown, "vicenza");
+                addOption(cityDropdown, "citta metropolitana di roma capitale");
+                addOption(cityDropdown, "corbetta");
+
+                addOption(stateDropdown, " milan");
+                addOption(stateDropdown, " lombardy");
+                addOption(stateDropdown, " lazio");
+                addOption(stateDropdown, " piedmont");
+                addOption(stateDropdown, " latium");
+                addOption(stateDropdown, " basilicate");
+                addOption(stateDropdown, " veneto");
+                break;
+
+                case "colombia":
+                addOption(cityDropdown, "bogota");
+
+                addOption(stateDropdown, " distrito especial");
+                break;
+
+                case "algeria":
+                addOption(cityDropdown, "algiers");
+
+                addOption(stateDropdown, " alger");
+                break;
+
+                case "norway":
+                addOption(cityDropdown, "stavanger");
+                addOption(cityDropdown, "fornebu");
+                addOption(cityDropdown, "akre");
+                addOption(cityDropdown, "oslo");
+
+                addOption(stateDropdown, " rogaland");
+                addOption(stateDropdown, " akershus");
+                addOption(stateDropdown, " hordaland");
+                addOption(stateDropdown, " oslo");
+                break;
+
+                case "qatar":
+                addOption(cityDropdown, "doha");
+
+                addOption(stateDropdown, " ad dawhah");
+                break;
+
+                case "venezuela":
+                addOption(cityDropdown, "caracas");
+
+                addOption(stateDropdown, " capital");
+                break;
+
+                case "indonesia":
+                addOption(cityDropdown, "jakarta");
+
+                addOption(stateDropdown, " jakarta raya");
+                break;
+
+                case "malaysia":
+                addOption(cityDropdown, "kuala lumpur");
+                addOption(cityDropdown, "pitas");
+
+                addOption(stateDropdown, " kuala lumpur");
+                addOption(stateDropdown, " sabah");
+                break;
+
+                case "denmark":
+                addOption(cityDropdown, "copenhagen");
+                addOption(cityDropdown, "arhus");
+                addOption(cityDropdown, "hedehusene");
+                addOption(cityDropdown, "valby");
+                addOption(cityDropdown, "billund");
+
+                addOption(stateDropdown, " hovedstaden");
+                addOption(stateDropdown, " midtjylland");
+                addOption(stateDropdown, " capital region");
+                addOption(stateDropdown, " syddanmark");
+                break;
+
+                case "luxembourg":
+                addOption(cityDropdown, "nan");
+                addOption(cityDropdown, "oakland");
+
+                addOption(stateDropdown, "None");
+                addOption(stateDropdown, " michigan");
+                break;
+
+                case "hong kong":
+                addOption(cityDropdown, "hong kong");
+                addOption(cityDropdown, "quarry bay");
+
+                addOption(stateDropdown, " central and western district");
+                addOption(stateDropdown, " eastern");
+                break;
+
+                case "philippines":
+                addOption(cityDropdown, "pasig city");
+
+                addOption(stateDropdown, " metro manila");
+                break;
+
+                case "austria":
+                addOption(cityDropdown, "fuschl am see");
+
+                addOption(stateDropdown, " salzburg");
+                break;
+
+                case "chile":
+                addOption(cityDropdown, "las condes");
+                addOption(cityDropdown, "santiago");
+
+                addOption(stateDropdown, " santiago metropolitan");
+                break;
+
+                case "new zealand":
+                addOption(cityDropdown, "auckland");
+
+                addOption(stateDropdown, " auckland");
+                break;
+
+                case "kuwait":
+                addOption(cityDropdown, "kuwait city");
+
+                addOption(stateDropdown, " al asimah");
+                break;
+
+                case "argentina":
+                addOption(cityDropdown, "buenos aires");
+                addOption(cityDropdown, "lujan");
+                addOption(cityDropdown, "mar del plata");
+                addOption(cityDropdown, "san justo");
+
+                addOption(stateDropdown, " buenos aires f.d.");
+                addOption(stateDropdown, " mendoza");
+                addOption(stateDropdown, " buenos aires");
+                break;
+
+                case "peru":
+                addOption(cityDropdown, "la molina hacienda");
+
+                addOption(stateDropdown, " lima");
+                break;
+
+                case "greece":
+                addOption(cityDropdown, "athens");
+
+                addOption(stateDropdown, " attiki");
+                break;
+
+                case "liechtenstein":
+                addOption(cityDropdown, "haltom city");
+
+                addOption(stateDropdown, " texas");
+                break;
+
+            default:
+                // Default case (no cities or states for unknown country)
+                break;
+        }
+    }
+
+    function addOption(selectElement, optionText) {
+        var option = document.createElement("option");
+        option.text = optionText;
+        selectElement.add(option);
+    }
+
+
+    function validateEmployeesTo() {
+        var fromInput = document.getElementById("employeeFromInput");
+        var toInput = document.getElementById("employeeToInput");
+
+        // Ensure Employees (To) is not less than Employees (From)
+        if (parseInt(toInput.value) < parseInt(fromInput.value)) {
+            toInput.setCustomValidity("Employees (To) must be greater than or equal to Employees (From)");
+        } else {
+            toInput.setCustomValidity("");
+        }
+    }
+
+</script>
+
+{% endblock body %}

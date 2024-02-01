@@ -1,0 +1,49 @@
+{% extends "basen.html" %}
+
+{% block title %}
+Upload data
+{% endblock title %}
+
+{% block body %}
+<div class="container mt-5">
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    {% if file_path %}
+        <div class="alert alert-success" role="alert">
+            File successfully uploaded! Path: {{ file_path }}
+        </div>
+
+        <h3>Uploaded DataFrame:</h3>
+        {{ df|safe }}
+    {% else %}
+        <h2>Upload File</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="fileInput" name="file" required>
+                <label class="custom-file-label" for="fileInput">Choose file...</label>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Upload</button>
+        </form>
+    {% endif %}
+</div>
+
+<!-- Bootstrap JS and Popper.js (for Bootstrap modal and tooltips) -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script>
+    // Update the label text with the selected file name
+    document.getElementById("fileInput").addEventListener("change", function() {
+        var fileName = this.files[0].name;
+        var label = document.querySelector(".custom-file-label");
+        label.innerText = fileName;
+    });
+</script>
+
+{% endblock body %}
